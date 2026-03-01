@@ -1,12 +1,12 @@
 http:
-  repo: thagore-lang/http
+  repo: thagore-foundation/http
   version: 1.0.0
   description: "HTTP client for Thagore"
   checksum: ""
   maintainer: thagore-foundation
 
 json:
-  repo: thagore-lang/json
+  repo: thagore-foundation/json
   version: 1.2.0
   description: "JSON parser for Thagore"
   checksum: ""
