@@ -1,0 +1,7 @@
+xml-parser:
+  repo: someguy/thag-xml
+  version: 0.1.0
+  description: "XML parser"
+  checksum: ""
+  submitted: 2026-03-01
+  status: pending-review

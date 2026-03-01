@@ -1,0 +1,6 @@
+csv:
+  repo: community-member/thag-csv
+  version: 0.3.0
+  description: "CSV parser"
+  checksum: ""
+  reviewed_by: reviewer-username
