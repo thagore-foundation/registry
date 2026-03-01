@@ -21,54 +21,54 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-      run: python -m pip install --disable-pip-version-check --no-input pyyaml
+        run: python -m pip install --disable-pip-version-check --no-input pyyaml
 
       - name: Parse issue and update publish.yaml
-      id: parse
-      env:
-        ISSUE_TITLE: ${{ github.event.issue.title }}
-        ISSUE_BODY: ${{ github.event.issue.body }}
-        ISSUE_USER: ${{ github.event.issue.user.login }}
-      run: python .github/scripts/process_publish_issue.py
+        id: parse
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+        run: python .github/scripts/process_publish_issue.py
 
       - name: Validate registry files
-      if: steps.parse.outputs.create_pr == 'true'
-      run: python .github/scripts/validate_registry.py
+        if: steps.parse.outputs.create_pr == 'true'
+        run: python .github/scripts/validate_registry.py
 
       - name: Create pull request
-      if: steps.parse.outputs.create_pr == 'true'
-      id: cpr
-      uses: peter-evans/create-pull-request@v7
-      with:
-        commit-message: "chore(publish): intake ${{ steps.parse.outputs.pkg }}@${{ steps.parse.outputs.version }}"
-        title: "publish: ${{ steps.parse.outputs.pkg }}@${{ steps.parse.outputs.version }}"
-        body: |
-          Automated intake from issue #${{ github.event.issue.number }}.
+        if: steps.parse.outputs.create_pr == 'true'
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore(publish): intake ${{ steps.parse.outputs.pkg }}@${{ steps.parse.outputs.version }}"
+          title: "publish: ${{ steps.parse.outputs.pkg }}@${{ steps.parse.outputs.version }}"
+          body: |
+            Automated intake from issue #${{ github.event.issue.number }}.
 
-          - Package: `${{ steps.parse.outputs.pkg }}`
-          - Version: `${{ steps.parse.outputs.version }}`
-          - Repo: `${{ steps.parse.outputs.repo }}`
-        branch: "automation/publish-issue-${{ github.event.issue.number }}"
-        delete-branch: true
+            - Package: `${{ steps.parse.outputs.pkg }}`
+            - Version: `${{ steps.parse.outputs.version }}`
+            - Repo: `${{ steps.parse.outputs.repo }}`
+          branch: "automation/publish-issue-${{ github.event.issue.number }}"
+          delete-branch: true
 
       - name: Comment success
-      if: steps.parse.outputs.create_pr == 'true' && steps.cpr.outputs.pull-request-number
-      uses: peter-evans/create-or-update-comment@v4
-      with:
-        issue-number: ${{ github.event.issue.number }}
-        body: |
-          Publish intake processed.
-          Created/updated PR: #${{ steps.cpr.outputs.pull-request-number }}
+        if: steps.parse.outputs.create_pr == 'true' && steps.cpr.outputs.pull-request-number
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Publish intake processed.
+            Created/updated PR: #${{ steps.cpr.outputs.pull-request-number }}
 
       - name: Comment invalid format
-      if: steps.parse.outputs.create_pr != 'true'
-      uses: peter-evans/create-or-update-comment@v4
-      with:
-        issue-number: ${{ github.event.issue.number }}
-        body: |
-          Invalid publish request format.
-          Use: `publish <package>@<version>`
-          Optional fields:
-          - `repo: org/name`
-          - `description: ...`
-          - `checksum: <sha256>`
+        if: steps.parse.outputs.create_pr != 'true'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Invalid publish request format.
+            Use: `publish <package>@<version>`
+            Optional fields:
+            - `repo: org/name`
+            - `description: ...`
+            - `checksum: <sha256>`
