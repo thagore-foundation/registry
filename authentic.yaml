@@ -11,3 +11,10 @@ json:
   description: "JSON parser for Thagore"
   checksum: ""
   maintainer: thagore-foundation
+
+zalo:
+  repo: dragopub/zalo
+  version: 0.1.0
+  description: "Zalo bot library for Thagore"
+  checksum: ""
+  maintainer: dragopub
